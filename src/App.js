@@ -1,23 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useRef } from "react";
+import List from "./components/List";
+import Wrapper from "./components/Wrapper";
+import "./App.css";
 
 function App() {
+  const [list] = useState(["All", "Home", "Media", "Classic"]);
+  const wrapperRef = useRef();
+  const handleClickList = e => {
+    const dataType = e.target.dataset.type;
+    handleFilterImages(dataType);
+  };
+  const handleFilterImages = dataType => {
+    wrapperRef.current.style.opacity = 0;
+    const blocks = wrapperRef.current.querySelectorAll(".blocks");
+    blocks.forEach(block => {
+      console.log(dataType);
+      block.style.display = "none";
+      if (block.dataset.type === dataType || dataType === "All") {
+        block.style.display = "block";
+      }
+      wrapperRef.current.style.opacity = 1;
+    });
+  };
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <ul>
+          {list.map((li, i) => (
+            <List key={i} li={li} index={i} handleClickList={handleClickList} />
+          ))}
+        </ul>
+        <Wrapper wrapperRef={wrapperRef} />
       </header>
     </div>
   );
